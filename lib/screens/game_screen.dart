@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/game_provider.dart';
+import '../widgets/info_card.dart';
+import '../widgets/action_button.dart';
+import '../widgets/game_board.dart';
 
 class GameScreen extends StatelessWidget {
   const GameScreen({super.key});
@@ -46,48 +49,29 @@ class GameScreen extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      _buildInfoCard(
-                        '当前得分',
-                        '${gameModel.score}',
-                        Icons.stars,
+                      InfoCard(
+                        title: '当前得分',
+                        value: '${gameModel.score}',
+                        icon: Icons.stars,
                       ),
                       const SizedBox(height: 16),
-                      _buildInfoCard(
-                        '剩余配对',
-                        '${gameModel.remainingPairs}',
-                        Icons.grid_on,
+                      InfoCard(
+                        title: '剩余配对',
+                        value: '${gameModel.remainingPairs}',
+                        icon: Icons.grid_on,
                       ),
                       const SizedBox(height: 16),
-                      _buildInfoCard(
-                        '游戏状态',
-                        gameModel.remainingPairs == 0 ? '已完成' : '进行中',
-                        Icons.info_outline,
+                      InfoCard(
+                        title: '游戏状态',
+                        value: gameModel.remainingPairs == 0 ? '已完成' : '进行中',
+                        icon: Icons.info_outline,
                       ),
                     ],
                   ),
                 ),
                 // 中间游戏区域
                 Expanded(
-                  child: Center(
-                    child: AspectRatio(
-                      aspectRatio: 1,
-                      child: GridView.builder(
-                        padding: const EdgeInsets.all(16),
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: gameModel.columns,
-                          childAspectRatio: 1,
-                          crossAxisSpacing: 4,
-                          mainAxisSpacing: 4,
-                        ),
-                        itemCount: gameModel.rows * gameModel.columns,
-                        itemBuilder: (context, index) {
-                          final row = index ~/ gameModel.columns;
-                          final col = index % gameModel.columns;
-                          return buildTile(context, gameProvider, row, col);
-                        },
-                      ),
-                    ),
-                  ),
+                  child: GameBoard(gameProvider: gameProvider),
                 ),
                 // 右侧功能按钮
                 Container(
@@ -105,40 +89,40 @@ class GameScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      _buildActionButton(
-                        '重新开始',
-                        Icons.refresh,
-                        () => gameProvider.restartGame(),
+                      ActionButton(
+                        label: '重新开始',
+                        icon: Icons.refresh,
+                        onPressed: () => gameProvider.restartGame(),
                       ),
                       const SizedBox(height: 16),
-                      _buildActionButton(
-                        '游戏规则',
-                        Icons.help_outline,
-                        () {
+                      ActionButton(
+                        label: '游戏规则',
+                        icon: Icons.help_outline,
+                        onPressed: () {
                           // TODO: 显示游戏规则
                         },
                       ),
                       const SizedBox(height: 16),
-                      _buildActionButton(
-                        '提示',
-                        Icons.question_mark_outlined,
-                        () {
+                      ActionButton(
+                        label: '提示',
+                        icon: Icons.question_mark_outlined,
+                        onPressed: () {
                           // TODO: 提示下一步操作
                         },
                       ),
                       const SizedBox(height: 16),
-                      _buildActionButton(
-                        '设置',
-                        Icons.settings,
-                        () {
+                      ActionButton(
+                        label: '设置',
+                        icon: Icons.settings,
+                        onPressed: () {
                           Navigator.pushNamed(context, '/setting');
                         },
                       ),
                       const SizedBox(height: 16),
-                      _buildActionButton(
-                        '返回主菜单',
-                        Icons.home,
-                        () {
+                      ActionButton(
+                        label: '返回主菜单',
+                        icon: Icons.home,
+                        onPressed: () {
                           Navigator.pushNamed(context, '/');
                         },
                       ),
@@ -148,102 +132,6 @@ class GameScreen extends StatelessWidget {
               ],
             );
           },
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInfoCard(String title, String value, IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 2,
-            offset: const Offset(0, 1),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(icon, size: 20, color: Colors.blue),
-              const SizedBox(width: 8),
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.blue,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildActionButton(
-      String label, IconData icon, VoidCallback onPressed) {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton.icon(
-        onPressed: onPressed,
-        icon: Icon(icon),
-        label: Text(label),
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 24),
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.blue,
-          elevation: 2,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget buildTile(
-      BuildContext context, GameProvider gameProvider, int row, int col) {
-    final gameModel = gameProvider.gameModel;
-    final value = gameModel.board[row][col];
-
-    if (value == 0) {
-      return Container(
-        decoration: BoxDecoration(
-          color: Colors.grey[300],
-          borderRadius: BorderRadius.circular(8),
-        ),
-      );
-    }
-
-    return GestureDetector(
-      onTap: () {
-        gameProvider.selectTile(row, col);
-      },
-      child: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/images/tile_$value.png'),
-            fit: BoxFit.cover,
-          ),
-          borderRadius: BorderRadius.circular(8),
         ),
       ),
     );
