@@ -68,12 +68,12 @@ class GameModel {
 
   List<PathPoint> getConnectionPath(int row1, int col1, int row2, int col2) {
     List<PathPoint> path = [];
-    
+
     // 直接连接
     if (isDirectlyConnected(row1, col1, row2, col2)) {
       return path; // 直接连接不需要中间点
     }
-    
+
     // 一个拐点连接
     if (board[row1][col2] == 0 &&
         isDirectlyConnected(row1, col1, row1, col2) &&
@@ -81,14 +81,14 @@ class GameModel {
       path.add(PathPoint(row1, col2));
       return path;
     }
-    
+
     if (board[row2][col1] == 0 &&
         isDirectlyConnected(row1, col1, row2, col1) &&
         isDirectlyConnected(row2, col1, row2, col2)) {
       path.add(PathPoint(row2, col1));
       return path;
     }
-    
+
     // 两个拐点连接
     for (int i = 0; i < rows; i++) {
       if (board[i][col1] == 0 && board[i][col2] == 0) {
@@ -113,7 +113,7 @@ class GameModel {
         }
       }
     }
-    
+
     return path;
   }
 

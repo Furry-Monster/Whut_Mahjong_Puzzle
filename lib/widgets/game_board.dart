@@ -132,13 +132,13 @@ class _GameBoardState extends State<GameBoard> {
               .canConnect(_selectedRow!, _selectedCol!, row, col)) {
             // 可以连接，显示连接线并消除方块
             _showConnection = true;
-            
+
             // 标记要消除的方块
             final firstTileKey = '$_selectedRow,$_selectedCol';
             final secondTileKey = '$row,$col';
             _matchedTiles[firstTileKey] = true;
             _matchedTiles[secondTileKey] = true;
-            
+
             // 触发重建以显示消除动画
             setState(() {});
 

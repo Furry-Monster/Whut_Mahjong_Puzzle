@@ -175,18 +175,18 @@ class _ConnectionLinePainter extends CustomPainter {
 
     // 绘制起点
     canvas.drawCircle(
-      this.path[0],
+      path[0],
       6.0,
       endpointPaint,
     );
 
     // 找到当前进度下的终点位置
     double accumulatedLength = 0;
-    Offset currentEndPoint = this.path[0];
+    Offset currentEndPoint = path[0];
 
-    for (int i = 0; i < this.path.length - 1; i++) {
-      final start = this.path[i];
-      final end = this.path[i + 1];
+    for (int i = 0; i < path.length - 1; i++) {
+      final start = path[i];
+      final end = path[i + 1];
       final segmentLength = segmentLengths[i];
 
       if (accumulatedLength + segmentLength <= currentLength) {
