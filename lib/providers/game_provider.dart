@@ -23,4 +23,12 @@ class GameProvider with ChangeNotifier {
     _isGameOver = false;
     notifyListeners();
   }
+
+  bool canConnect(int row1, int col1, int row2, int col2) {
+    return _gameModel.canConnect(row1, col1, row2, col2);
+  }
+
+  List<PathPoint> getConnectionPath(int row1, int col1, int row2, int col2) {
+    return _gameModel.getConnectionPath(row1, col1, row2, col2);
+  }
 }

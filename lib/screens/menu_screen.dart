@@ -24,7 +24,6 @@ class MenuScreen extends StatelessWidget {
                 height: 200,
               ),
               const SizedBox(height: 50),
-              // 开始游戏按钮
               ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(context, AppRoutes.game);
@@ -36,12 +35,11 @@ class MenuScreen extends StatelessWidget {
                   foregroundColor: Colors.blue[900],
                 ),
                 child: const Text(
-                  'New Game!!!',
+                  '开始游戏',
                   style: TextStyle(fontSize: 24),
                 ),
               ),
               const SizedBox(height: 20),
-              // 设置按钮
               ElevatedButton(
                 onPressed: () {
                   Navigator.pushNamed(context, AppRoutes.setting);
@@ -53,7 +51,7 @@ class MenuScreen extends StatelessWidget {
                   foregroundColor: Colors.blue[900],
                 ),
                 child: const Text(
-                  'Settings',
+                  '设置',
                   style: TextStyle(fontSize: 24),
                 ),
               ),
