@@ -22,6 +22,7 @@ class _GameBoardState extends State<GameBoard> {
   bool _showConnection = false;
   Offset? _startPoint;
   Offset? _endPoint;
+  Map<String, bool> _matchedTiles = {};
 
   @override
   Widget build(BuildContext context) {
@@ -68,11 +69,13 @@ class _GameBoardState extends State<GameBoard> {
                 final col = index % gameModel.columns;
                 final value = gameModel.board[row][col];
                 final isSelected = row == _selectedRow && col == _selectedCol;
+                final tileKey = '$row,$col';
+                final isMatched = _matchedTiles[tileKey] ?? false;
 
                 return TileWidget(
                   value: value,
                   isSelected: isSelected,
-                  isMatched: false, // 这里可以添加匹配状态
+                  isMatched: isMatched,
                   onTap: () => _onTileTap(row, col, tileSize),
                 );
               },
@@ -129,8 +132,17 @@ class _GameBoardState extends State<GameBoard> {
               .canConnect(_selectedRow!, _selectedCol!, row, col)) {
             // 可以连接，显示连接线并消除方块
             _showConnection = true;
+            
+            // 标记要消除的方块
+            final firstTileKey = '$_selectedRow,$_selectedCol';
+            final secondTileKey = '$row,$col';
+            _matchedTiles[firstTileKey] = true;
+            _matchedTiles[secondTileKey] = true;
+            
+            // 触发重建以显示消除动画
+            setState(() {});
 
-            // 延迟消除方块，让用户看到连接线
+            // 延迟消除方块，让用户看到连接线和消除动画
             Future.delayed(const Duration(milliseconds: 800), () {
               widget.gameProvider.selectTile(_selectedRow!, _selectedCol!);
               widget.gameProvider.selectTile(row, col);
@@ -139,6 +151,9 @@ class _GameBoardState extends State<GameBoard> {
                 _selectedRow = null;
                 _selectedCol = null;
                 _showConnection = false;
+                // 清除匹配标记
+                _matchedTiles.remove(firstTileKey);
+                _matchedTiles.remove(secondTileKey);
               });
             });
           } else {

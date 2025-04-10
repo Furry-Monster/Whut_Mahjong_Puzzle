@@ -31,23 +31,32 @@ class _TileWidgetState extends State<TileWidget>
   void initState() {
     super.initState();
     _controller = AnimationController(
-      duration: const Duration(milliseconds: 300),
       vsync: this,
+      duration: const Duration(milliseconds: 300),
     );
 
-    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
     );
 
     _rotateAnimation = Tween<double>(begin: 0.0, end: 0.1).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut),
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
     );
 
-    _opacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    _opacityAnimation = Tween<double>(begin: 1.0, end: 1.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeInOut,
+      ),
     );
 
-    if (widget.isMatched) {
+    if (widget.isSelected) {
       _controller.forward();
     }
   }
@@ -55,11 +64,53 @@ class _TileWidgetState extends State<TileWidget>
   @override
   void didUpdateWidget(TileWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.isMatched && !oldWidget.isMatched) {
-      _controller.forward();
-    } else if (!widget.isMatched && oldWidget.isMatched) {
-      _controller.reset();
+    
+    // 处理选中状态变化
+    if (widget.isSelected != oldWidget.isSelected) {
+      if (widget.isSelected) {
+        _controller.forward();
+      } else {
+        _controller.reverse();
+      }
     }
+    
+    // 处理消除状态变化
+    if (widget.isMatched && !oldWidget.isMatched) {
+      _startDisappearingAnimation();
+    }
+  }
+
+  void _startDisappearingAnimation() {
+    setState(() {
+    });
+    
+    // 重置动画
+    _controller.reset();
+    
+    // 创建新的消失动画
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeOutBack,
+      ),
+    );
+    
+    _rotateAnimation = Tween<double>(begin: 0.0, end: 0.5).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeOutBack,
+      ),
+    );
+    
+    _opacityAnimation = Tween<double>(begin: 1.0, end: 0.0).animate(
+      CurvedAnimation(
+        parent: _controller,
+        curve: Curves.easeOut,
+      ),
+    );
+    
+    // 播放动画
+    _controller.forward();
   }
 
   @override
@@ -70,47 +121,51 @@ class _TileWidgetState extends State<TileWidget>
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: widget.onTap,
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, child) {
-          return Transform.scale(
-            scale: widget.isSelected ? _scaleAnimation.value : 1.0,
-            child: Transform.rotate(
-              angle: widget.isSelected ? _rotateAnimation.value : 0.0,
-              child: Container(
-                decoration: BoxDecoration(
-                  color: widget.value == 0 ? Colors.grey[300] : Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: widget.isSelected
-                          ? Colors.blue.withOpacity(0.5)
-                          : Colors.black.withOpacity(0.1),
-                      spreadRadius: widget.isSelected ? 2 : 1,
-                      blurRadius: widget.isSelected ? 5 : 2,
-                      offset: const Offset(0, 1),
+    if (widget.value == 0) {
+      return Container(); // 空白方块
+    }
+
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        return Transform.scale(
+          scale: _scaleAnimation.value,
+          child: Transform.rotate(
+            angle: _rotateAnimation.value,
+            child: Opacity(
+              opacity: _opacityAnimation.value,
+              child: GestureDetector(
+                onTap: widget.onTap,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    border: widget.isSelected
+                        ? Border.all(color: Colors.blue, width: 3)
+                        : null,
+                    boxShadow: widget.isSelected
+                        ? [
+                            BoxShadow(
+                              color: Colors.blue.withOpacity(0.5),
+                              blurRadius: 8,
+                              spreadRadius: 2,
+                            )
+                          ]
+                        : null,
+                  ),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.asset(
+                      'assets/images/tile_${widget.value}.png',
+                      fit: BoxFit.cover,
                     ),
-                  ],
-                  border: widget.isSelected
-                      ? Border.all(color: Colors.blue, width: 2)
-                      : null,
+                  ),
                 ),
-                child: widget.value == 0
-                    ? null
-                    : FadeTransition(
-                        opacity: _opacityAnimation,
-                        child: Image.asset(
-                          'assets/images/tile_${widget.value}.png',
-                          fit: BoxFit.cover,
-                        ),
-                      ),
               ),
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }
