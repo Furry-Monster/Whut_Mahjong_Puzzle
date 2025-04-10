@@ -26,6 +26,24 @@ class SettingScreen extends StatelessWidget {
               padding: const EdgeInsets.all(16),
               children: [
                 _buildSettingCard(
+                  title: 'Graphics',
+                  children: [
+                    _buildSettingSwitch(
+                      title: 'Using Shader',
+                      subtitle: '使用内置渲染器',
+                      value: settings.shaderEnabled,
+                      onChanged: (value) => settings.toggleShader(),
+                    ),
+                    _buildSettingSwitch(
+                      title: 'High Quality',
+                      subtitle: '使用高质量纹理',
+                      value: settings.highQualityEnabled,
+                      onChanged: (value) => settings.toggleHighQuality(),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                _buildSettingCard(
                   title: 'Audio',
                   children: [
                     _buildSettingSwitch(

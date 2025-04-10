@@ -6,10 +6,14 @@ class SettingsProvider with ChangeNotifier {
   static const String _musicEnabledKey = 'music_enabled';
   static const String _vibrationEnabledKey = 'vibration_enabled';
 
+  bool _shaderEnabled = kIsWeb;
+  bool _highQualityEnabled = kIsWeb;
   bool _soundEnabled = true;
   bool _musicEnabled = true;
   bool _vibrationEnabled = true;
 
+  bool get shaderEnabled => _shaderEnabled;
+  bool get highQualityEnabled => _highQualityEnabled;
   bool get soundEnabled => _soundEnabled;
   bool get musicEnabled => _musicEnabled;
   bool get vibrationEnabled => _vibrationEnabled;
@@ -33,6 +37,20 @@ class SettingsProvider with ChangeNotifier {
     await prefs.setBool(_soundEnabledKey, _soundEnabled);
     await prefs.setBool(_musicEnabledKey, _musicEnabled);
     await prefs.setBool(_vibrationEnabledKey, _vibrationEnabled);
+  }
+
+  // 切换Shader开关
+  void toggleShader() {
+    _shaderEnabled = !_shaderEnabled;
+    _saveSettings();
+    notifyListeners();
+  }
+
+  // 切换高质量开关
+  void toggleHighQuality() {
+    _highQualityEnabled = !_highQualityEnabled;
+    _saveSettings();
+    notifyListeners();
   }
 
   // 切换声音开关

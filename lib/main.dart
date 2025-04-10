@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
         initialRoute: AppRoutes.menu,
         onGenerateRoute: AppRoutes.onGenerateRoute,
         routes: AppRoutes.getRoutes(),
+        debugShowCheckedModeBanner: false,
       ),
     );
   }
