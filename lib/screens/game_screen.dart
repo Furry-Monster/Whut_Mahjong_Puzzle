@@ -4,6 +4,7 @@ import '../providers/game_provider.dart';
 import '../widgets/info_card.dart';
 import '../widgets/action_button.dart';
 import '../widgets/game_board.dart';
+import '../widgets/game_rules_dialog.dart';
 
 class GameScreen extends StatelessWidget {
   const GameScreen({super.key});
@@ -69,10 +70,12 @@ class GameScreen extends StatelessWidget {
                     ],
                   ),
                 ),
+
                 // 中间游戏区域
                 Expanded(
                   child: GameBoard(gameProvider: gameProvider),
                 ),
+
                 // 右侧功能按钮
                 Container(
                   width: 250,
@@ -99,7 +102,10 @@ class GameScreen extends StatelessWidget {
                         label: '游戏规则',
                         icon: Icons.help_outline,
                         onPressed: () {
-                          // TODO: 显示游戏规则
+                          showDialog(
+                            context: context,
+                            builder: (context) => const GameRulesDialog(),
+                          );
                         },
                       ),
                       const SizedBox(height: 16),

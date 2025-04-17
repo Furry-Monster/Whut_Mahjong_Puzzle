@@ -29,20 +29,16 @@ class _GameBoardState extends State<GameBoard> {
     final gameModel = widget.gameProvider.gameModel;
     final size = MediaQuery.of(context).size;
 
-    // 计算棋盘大小，确保能显示所有格子
     // 使用屏幕宽度的60%作为基准，但确保高度不超过屏幕高度的70%
     final maxBoardSize = size.width * 0.6;
     final maxHeight = size.height * 0.7;
 
-    // 根据行列数计算合适的棋盘大小
     final aspectRatio = gameModel.columns / gameModel.rows;
     double boardSize;
 
     if (maxBoardSize / aspectRatio <= maxHeight) {
-      // 宽度限制
       boardSize = maxBoardSize;
     } else {
-      // 高度限制
       boardSize = maxHeight * aspectRatio;
     }
 
@@ -124,16 +120,12 @@ class _GameBoardState extends State<GameBoard> {
         final secondValue = value;
 
         if (firstValue == secondValue) {
-          // 计算连接路径
           _calculateConnectionPath(row, col, tileSize);
 
-          // 检查是否可以连接
           if (widget.gameProvider
               .canConnect(_selectedRow!, _selectedCol!, row, col)) {
-            // 可以连接，显示连接线并消除方块
             _showConnection = true;
 
-            // 标记要消除的方块
             final firstTileKey = '$_selectedRow,$_selectedCol';
             final secondTileKey = '$row,$col';
             _matchedTiles[firstTileKey] = true;
@@ -142,7 +134,6 @@ class _GameBoardState extends State<GameBoard> {
             // 触发重建以显示消除动画
             setState(() {});
 
-            // 延迟消除方块，让用户看到连接线和消除动画
             Future.delayed(const Duration(milliseconds: 800), () {
               widget.gameProvider.selectTile(_selectedRow!, _selectedCol!);
               widget.gameProvider.selectTile(row, col);
@@ -151,19 +142,16 @@ class _GameBoardState extends State<GameBoard> {
                 _selectedRow = null;
                 _selectedCol = null;
                 _showConnection = false;
-                // 清除匹配标记
                 _matchedTiles.remove(firstTileKey);
                 _matchedTiles.remove(secondTileKey);
               });
             });
           } else {
-            // 不能连接，只更新选择
             _selectedRow = row;
             _selectedCol = col;
             _showConnection = false;
           }
         } else {
-          // 不同方块，更新选择
           _selectedRow = row;
           _selectedCol = col;
           _showConnection = false;
@@ -182,7 +170,6 @@ class _GameBoardState extends State<GameBoard> {
     _startPoint = Offset(startX, startY);
     _endPoint = Offset(endX, endY);
 
-    // 获取连接路径点
     final pathPoints = widget.gameProvider
         .getConnectionPath(_selectedRow!, _selectedCol!, row, col);
 

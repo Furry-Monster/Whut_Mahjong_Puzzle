@@ -22,7 +22,7 @@ class SettingsProvider with ChangeNotifier {
     _loadSettings();
   }
 
-  // 加载设置
+  /// 加载设置
   Future<void> _loadSettings() async {
     final prefs = await SharedPreferences.getInstance();
     _soundEnabled = prefs.getBool(_soundEnabledKey) ?? true;
@@ -31,7 +31,7 @@ class SettingsProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  // 保存设置
+  /// 保存设置
   Future<void> _saveSettings() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setBool(_soundEnabledKey, _soundEnabled);
@@ -39,35 +39,35 @@ class SettingsProvider with ChangeNotifier {
     await prefs.setBool(_vibrationEnabledKey, _vibrationEnabled);
   }
 
-  // 切换Shader开关
+  /// 切换Shader开关
   void toggleShader() {
     _shaderEnabled = !_shaderEnabled;
     _saveSettings();
     notifyListeners();
   }
 
-  // 切换高质量开关
+  /// 切换高质量开关
   void toggleHighQuality() {
     _highQualityEnabled = !_highQualityEnabled;
     _saveSettings();
     notifyListeners();
   }
 
-  // 切换声音开关
+  /// 切换声音开关
   void toggleSound() {
     _soundEnabled = !_soundEnabled;
     _saveSettings();
     notifyListeners();
   }
 
-  // 切换音乐开关
+  /// 切换音乐开关
   void toggleMusic() {
     _musicEnabled = !_musicEnabled;
     _saveSettings();
     notifyListeners();
   }
 
-  // 切换震动开关
+  /// 切换震动开关
   void toggleVibration() {
     _vibrationEnabled = !_vibrationEnabled;
     _saveSettings();

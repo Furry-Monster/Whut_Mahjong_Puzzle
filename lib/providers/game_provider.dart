@@ -12,15 +12,15 @@ class GameProvider with ChangeNotifier {
   GameModel get gameModel => _gameModel;
   bool get isGameOver => _isGameOver;
 
-  void selectTile(int row, int col) {
-    _gameModel.selectTile(row, col);
-    _isGameOver = _gameModel.isGameOver();
-    notifyListeners();
-  }
-
   void restartGame() {
     _gameModel = GameModel();
     _isGameOver = false;
+    notifyListeners();
+  }
+
+  void selectTile(int row, int col) {
+    _gameModel.selectTile(row, col);
+    _isGameOver = _gameModel.isGameOver();
     notifyListeners();
   }
 
